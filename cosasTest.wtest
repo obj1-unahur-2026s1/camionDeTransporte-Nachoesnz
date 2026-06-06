@@ -1,9 +1,44 @@
 import cosas.*
+import camion.*
 
-describe "group of test for cosas" {
+describe "Tests individuales de las Cosas" {
 
-  test "first test" {
-    assert.that(true)
-  }
+    test "Paquete de ladrillos - Comportamiento inicial con 100 ladrillos" {
+        paqueteLadrillos.cambiarCantidadLadrillos(100)
+        assert.equals(200, paqueteLadrillos.peso())          // 100 * 2kg
+        assert.equals(2, paqueteLadrillos.nivelPeligrosidad())
+        assert.equals(1, paqueteLadrillos.bultos())          // Hasta 100 -> 1 bulto
+    }
 
+    test "Batería antiaérea - Estado descargada vs cargada" {
+        // Inicialmente asumimos descargada
+        assert.equals(200, bateriaAntiAerea.peso())
+        assert.equals(0, bateriaAntiAerea.nivelPeligrosidad())
+        assert.equals(1, bateriaAntiAerea.bultos())
+
+        bateriaAntiAerea.cambiarEstadoBateria() // Activamos misiles
+        assert.equals(300, bateriaAntiAerea.peso())
+        assert.equals(100, bateriaAntiAerea.nivelPeligrosidad())
+        assert.equals(2, bateriaAntiAerea.bultos())
+    }
+
+    test "Embalaje de seguridad con residuos radioactivos de 30kg" {
+        residuosRadioactivos.cambiarPeso(30)
+        embalajeSeguridad.cambiarObjetoEnvuelto(residuosRadioactivos)
+
+        assert.equals(30, embalajeSeguridad.peso())            // Mismo peso que lo envuelto
+        assert.equals(100, embalajeSeguridad.nivelPeligrosidad())   // 200 / 2
+        assert.equals(2, embalajeSeguridad.bultos())           // Siempre 2 bultos
+    }
+
+    test "Contenedor portuario con Knight Rider y Arena de 20kg" {
+        contenedorPortuario.agregarCosasAlContenedor(knightRider)     // Peso 500, Peligrosidad 10, Bultos 1
+        arenaGranel.cambiarPeso(20)
+        arenaGranel.peso()
+        contenedorPortuario.agregarCosasAlContenedor(arenaGranel)     // Peso 20, Peligrosidad 1, Bultos 1
+
+        assert.equals(620, contenedorPortuario.peso())          // 100 + 500 + 20
+        assert.equals(10, contenedorPortuario.nivelPeligrosidad())   // Max(10, 1) = 10
+        assert.equals(3, contenedorPortuario.bultos())          // 1 + 1 + 1 = 3
+    }
 }

@@ -6,6 +6,9 @@ object knightRider {
         return 10
     }
 
+    method bultos(){
+        return 1
+    }
 }
 
 object bumblebee {
@@ -25,16 +28,20 @@ object bumblebee {
             transformacionActual = modoAuto
         }
     }
+    method bultos(){
+        return 2
+    }
+    
 }
 
 object modoAuto{
-    method peligrosidad(){
+    method nivelPeligrosidad(){
         return 15
     }
 }
 
 object modoRobot{
-    method peligrosidad(){
+    method nivelPeligrosidad(){
         return 30
     }
 }
@@ -53,6 +60,15 @@ object paqueteLadrillos{
     method nivelPeligrosidad(){
         return 2
     }
+    method bultos() {
+        return if (cantidadLadrillos <= 100) {
+            1
+        } else if (cantidadLadrillos.between(101, 300)) {
+            2
+        } else {
+            3
+        }
+    }
 }
 
 
@@ -68,11 +84,14 @@ object arenaGranel{
         return 1
     }
     
+    method bultos(){
+        return 1
+    }
 }
 
 object bateriaAntiAerea {
     var estadoBateria = bateriaDescargada 
-
+    
     method peso() {
         return estadoBateria.peso()
     }
@@ -88,6 +107,9 @@ object bateriaAntiAerea {
             estadoBateria = bateriaDescargada
         }
     }
+    method bultos() {
+        return if (estadoBateria == bateriaCargada) 2 else 1
+    }
 }
 
 object bateriaCargada{
@@ -102,33 +124,43 @@ object bateriaDescargada{
 
 object contenedorPortuario{
     method peso(){
-        return 100 + interiorContenedor.sum()
+        return 100 + interiorContenedor.sum({cargaInterior => cargaInterior.peso()})
     }
     method nivelPeligrosidad(){
-        return interiorContenedor.nivelPeligrosidad().max()
+        return interiorContenedor.max({ carga => carga.nivelPeligrosidad() }).nivelPeligrosidad()
     }
 
-    var interiorContenedor = []
+    const interiorContenedor = []
 
     method agregarCosasAlContenedor(objeto){
-        interiorContenedor = interiorContenedor + objeto
+        interiorContenedor.add(objeto)
     }
 
     method quitarCosasAlContenedor(objeto){
-        interiorContenedor -= interiorContenedor.remove(objeto)
+        interiorContenedor.remove(objeto)
     }
 
+    method bultos() {
+        return 1 + interiorContenedor.sum({ carga => carga.bultos() })
+    }
 
 }
 
 object residuosRadioactivos{
     var peso = 100
-    method cambiarPeso(nuevoPeso){
+     method cambiarPeso(nuevoPeso){
         peso = nuevoPeso
+    }
+
+    method peso(){
+        return peso
     }
     method nivelPeligrosidad(){
         return 200
     }
+    method bultos(){
+        return 1
+    }   
 }
 
 object embalajeSeguridad{
@@ -140,6 +172,9 @@ object embalajeSeguridad{
         objetoEnvuelto = objetoNuevo
     }
     method nivelPeligrosidad(){
-        return (objetoEnvuelto.nivelPeligrosidad() / 2)
+        return objetoEnvuelto.nivelPeligrosidad() / 2
     }
+    method bultos(){
+        return 2
+    }    
 }
